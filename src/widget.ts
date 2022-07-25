@@ -11,7 +11,7 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 
 // Import the CSS
 import '../css/widget.css';
-import Rhino3dmLoader from 'three/examples/jsm/loaders/3DMLoader';
+import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export class RhinoModel extends DOMWidgetModel {
@@ -52,7 +52,7 @@ function load3dmModel(
     loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/');
     loader.load(
       filePath,
-      (data) => {
+      (data: any) => {
         const obj = data;
         obj.position.y = 0;
         obj.position.x = 0;
@@ -60,7 +60,7 @@ function load3dmModel(
         obj.castShadow = castShadow;
         scene.add(obj);
 
-        obj.traverse((child) => {
+        obj.traverse((child: any) => {
           if (child.isObject3D) {
             child.castShadow = castShadow;
             child.receiveShadow = receiveShadow;
@@ -70,7 +70,7 @@ function load3dmModel(
         resolve(obj);
       },
       undefined,
-      (error) => {
+      (error: any) => {
         console.log(error);
         reject(error);
       }
