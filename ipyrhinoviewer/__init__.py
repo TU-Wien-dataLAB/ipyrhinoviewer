@@ -4,7 +4,7 @@
 # Copyright (c) Florian Jaeger.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import ExampleWidget, RhinoViewer
+from .widget import RhinoViewer
 from ._version import __version__, version_info
 
 def _jupyter_labextension_paths():
