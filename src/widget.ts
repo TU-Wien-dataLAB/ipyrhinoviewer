@@ -79,6 +79,7 @@ function load3dmModel(
 }
 
 export class RhinoView extends DOMWidgetView {
+  private path = this.model.get('value');
   render() {
     const width = 1000;
     const height = 700;
@@ -95,10 +96,12 @@ export class RhinoView extends DOMWidgetView {
       event.stopPropagation();
     };
     this.el.addEventListener('contextmenu', onContextMenu);
-    load3dmModel(scene, '/tree/rhino.3dm', {
+    load3dmModel(scene, '/tree/' + this.path, {
       receiveShadow: true,
       castShadow: false,
     }).then(() => {
+      this.value_changed();
+      this.model.on('change:value', this.value_changed, this);
       animate();
     });
 
@@ -111,5 +114,9 @@ export class RhinoView extends DOMWidgetView {
     }
 
     animate();
+  }
+
+  value_changed(): void {
+    this.path = this.model.get('value');
   }
 }
