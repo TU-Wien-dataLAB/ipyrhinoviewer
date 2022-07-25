@@ -6,9 +6,9 @@
 
 import pytest
 
-from ..widget import ExampleWidget
+from ..widget import RhinoViewer
 
 
 def test_example_creation_blank():
-    w = ExampleWidget()
-    assert w.value == 'Hello World'
+    w = RhinoViewer()
+    assert w.value == 'rhino.3dm'
