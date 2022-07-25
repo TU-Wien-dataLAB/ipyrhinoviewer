@@ -11,7 +11,7 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 
 // Import the CSS
 import '../css/widget.css';
-import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
+import Rhino3dmLoader from 'three/examples/jsm/loaders/3DMLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export class RhinoModel extends DOMWidgetModel {
