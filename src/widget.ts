@@ -14,56 +14,16 @@ import '../css/widget.css';
 import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-export class ExampleModel extends DOMWidgetModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      _model_name: ExampleModel.model_name,
-      _model_module: ExampleModel.model_module,
-      _model_module_version: ExampleModel.model_module_version,
-      _view_name: ExampleModel.view_name,
-      _view_module: ExampleModel.view_module,
-      _view_module_version: ExampleModel.view_module_version,
-      value: '',
-    };
-  }
-
-  static serializers: ISerializers = {
-    ...DOMWidgetModel.serializers,
-    // Add any extra serializers here
-  };
-
-  static model_name = 'ExampleModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'ExampleView'; // Set to null if no view
-  static view_module = MODULE_NAME; // Set to null if no view
-  static view_module_version = MODULE_VERSION;
-}
-
-export class ExampleView extends DOMWidgetView {
-  render() {
-    this.el.classList.add('custom-widget');
-
-    this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
-  }
-
-  value_changed() {
-    this.el.textContent = this.model.get('value');
-  }
-}
-
 export class RhinoModel extends DOMWidgetModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: ExampleModel.model_name,
-      _model_module: ExampleModel.model_module,
-      _model_module_version: ExampleModel.model_module_version,
-      _view_name: ExampleModel.view_name,
-      _view_module: ExampleModel.view_module,
-      _view_module_version: ExampleModel.view_module_version,
+      _model_name: RhinoModel.model_name,
+      _model_module: RhinoModel.model_module,
+      _model_module_version: RhinoModel.model_module_version,
+      _view_name: RhinoModel.view_name,
+      _view_module: RhinoModel.view_module,
+      _view_module_version: RhinoModel.view_module_version,
       value: '',
     };
   }
@@ -131,6 +91,10 @@ export class RhinoView extends DOMWidgetView {
     scene.add(ambientLight);
     const controls = new OrbitControls(camera, renderer.domElement);
     this.el.appendChild(renderer.domElement);
+    const onContextMenu = (event: Event) => {
+      event.stopPropagation();
+    };
+    this.el.addEventListener('contextmenu', onContextMenu);
     load3dmModel(scene, '/tree/rhino.3dm', {
       receiveShadow: true,
       castShadow: false,
