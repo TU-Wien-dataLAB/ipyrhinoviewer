@@ -10,13 +10,13 @@ import { RhinoModel } from '..';
 
 describe('Rhino', () => {
   describe('ExampleModel', () => {
-    it('should be createable', () => {
+    it('should be creatable', () => {
       const model = createTestModel(RhinoModel);
       expect(model).toBeInstanceOf(RhinoModel);
       expect(model.get('value')).toEqual('Hello World');
     });
 
-    it('should be createable with a value', () => {
+    it('should be creatable with a value', () => {
       const state = { value: 'Foo Bar!' };
       const model = createTestModel(RhinoModel, state);
       expect(model).toBeInstanceOf(RhinoModel);

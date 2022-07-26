@@ -25,6 +25,8 @@ export class RhinoModel extends DOMWidgetModel {
       _view_module: RhinoModel.view_module,
       _view_module_version: RhinoModel.view_module_version,
       value: '',
+      height: 700,
+      width: 1000,
     };
   }
 
@@ -80,18 +82,34 @@ function load3dmModel(
 
 export class RhinoView extends DOMWidgetView {
   private path = this.model.get('value');
+  private width = this.model.get('width');
+  private height = this.model.get('height');
+
   render() {
-    const width = 1000;
-    const height = 700;
+    const error = document.createElement('p');
+    if (this.width < 100 || this.width > 3000) {
+      error.textContent = 'Width must be in range of 100-3000';
+      this.el.appendChild(error);
+      return;
+    }
+    if (this.height < 100 || this.height > 3000) {
+      error.textContent = 'Height must be in range of 100-3000';
+      this.el.appendChild(error);
+      return;
+    }
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      this.width / this.height,
+      0.1,
+      1000
+    );
 
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
+    renderer.setSize(this.width, this.height);
     const ambientLight = new THREE.AmbientLight(0xcccccc, 2);
     scene.add(ambientLight);
     const controls = new OrbitControls(camera, renderer.domElement);
-    this.el.appendChild(renderer.domElement);
     const onContextMenu = (event: Event) => {
       event.stopPropagation();
     };
@@ -99,11 +117,19 @@ export class RhinoView extends DOMWidgetView {
     load3dmModel(scene, '/tree/' + this.path, {
       receiveShadow: true,
       castShadow: false,
-    }).then(() => {
-      this.value_changed();
-      this.model.on('change:value', this.value_changed, this);
-      animate();
-    });
+    })
+      .then(() => {
+        this.el.appendChild(renderer.domElement);
+        this.value_changed();
+        this.model.on('change:value', this.value_changed, this);
+        animate();
+      })
+      .catch(() => {
+        error.textContent =
+          'Error: ' + this.model.get('value') + ' was not found';
+        this.el.appendChild(error);
+        return;
+      });
 
     camera.position.z = 5;
 
