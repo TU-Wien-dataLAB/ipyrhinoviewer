@@ -1,11 +1,17 @@
 
 # ipyrhinoviewer
 
-[![Build Status](https://travis-ci.org/TU-Wien-dataLAB/ipyrhinoviewer.svg?branch=master)](https://travis-ci.org/TU-Wien-dataLAB/ipyrhinoviewer)
-[![codecov](https://codecov.io/gh/TU-Wien-dataLAB/ipyrhinoviewer/branch/master/graph/badge.svg)](https://codecov.io/gh/TU-Wien-dataLAB/ipyrhinoviewer)
+![](https://img.shields.io/pypi/v/ipyrhinoviewer?color=%23)
+![](https://img.shields.io/npm/v/ipyrhinoviewer?color=%23)
+![](https://img.shields.io/github/workflow/status/TU-Wien-dataLAB/ipyrhinoviewer/Build)
 
+A Custom Jupyter Rhino 3dm Viewer
+## Usage
+```python
+from ipyrhinoviewer import RhinoViewer
 
-A Custom Jupyter Rhino Viewer
+RhinoViewer(value='examples/rhino.3dm',width=1000,height=700)
+```
 
 ## Installation
 
