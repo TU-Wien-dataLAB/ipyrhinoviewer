@@ -81,9 +81,9 @@ function load3dmModel(
 }
 
 export class RhinoView extends DOMWidgetView {
-  private path = this.model.get('value');
-  private width = this.model.get('width');
-  private height = this.model.get('height');
+  private path: string = this.model.get('value');
+  private width: number = this.model.get('width');
+  private height: number = this.model.get('height');
 
   render() {
     const error = document.createElement('p');
@@ -97,12 +97,17 @@ export class RhinoView extends DOMWidgetView {
       this.el.appendChild(error);
       return;
     }
+    if (this.path.split('.').pop() !== '3dm') {
+      error.textContent = 'Path should lead to a 3dm file';
+      this.el.appendChild(error);
+      return;
+    }
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75,
+      50,
       this.width / this.height,
       0.1,
-      1000
+      2000
     );
 
     const renderer = new THREE.WebGLRenderer();
