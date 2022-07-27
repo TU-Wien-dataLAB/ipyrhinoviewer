@@ -85,26 +85,35 @@ export class RhinoView extends DOMWidgetView {
   private width: number = this.model.get('width');
   private height: number = this.model.get('height');
 
-  render() {
+  showError(msg: string) {
     const error = document.createElement('p');
+    error.textContent = msg;
+    this.el.appendChild(error);
+    const loading = document.getElementById('loading');
+    if (loading !== null) {
+      this.el.removeChild(loading);
+    }
+  }
+
+  render() {
+    const loading = document.createElement('p');
+    loading.id = 'loading';
+    loading.textContent = 'Loading';
+    this.el.appendChild(loading);
     if (this.width < 100 || this.width > 3000) {
-      error.textContent = 'Error: width must be in range of 100-3000';
-      this.el.appendChild(error);
+      this.showError('Error: width must be in range of 100-3000');
       return;
     }
     if (this.height < 100 || this.height > 3000) {
-      error.textContent = 'Error: height must be in range of 100-3000';
-      this.el.appendChild(error);
+      this.showError('Error: height must be in range of 100-3000');
       return;
     }
     if (this.path === '') {
-      error.textContent = 'Error: path is required';
-      this.el.appendChild(error);
+      this.showError('Error: path is required');
       return;
     }
     if (this.path.split('.').pop() !== '3dm') {
-      error.textContent = 'Error: path should lead to a 3dm file';
-      this.el.appendChild(error);
+      this.showError('Error: path should lead to a 3dm file');
       return;
     }
     const scene = new THREE.Scene();
@@ -129,15 +138,16 @@ export class RhinoView extends DOMWidgetView {
       castShadow: false,
     })
       .then(() => {
+        this.el.removeChild(loading);
         this.el.appendChild(renderer.domElement);
         this.value_changed();
         this.model.on('change:value', this.value_changed, this);
         animate();
       })
       .catch(() => {
-        error.textContent =
-          'Error: path "' + this.model.get('path') + '" was not found';
-        this.el.appendChild(error);
+        this.showError(
+          'Error: path "' + this.model.get('path') + '" was not found'
+        );
         return;
       });
 
