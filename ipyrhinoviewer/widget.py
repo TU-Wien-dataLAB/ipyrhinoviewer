@@ -22,6 +22,6 @@ class RhinoViewer(DOMWidget):
     _view_module = Unicode(module_name).tag(sync=True)
     _view_module_version = Unicode(module_version).tag(sync=True)
 
-    value = Unicode('rhino.3dm').tag(sync=True)
+    path = Unicode('').tag(sync=True)
     width = Integer(1000).tag(sync=True)
     height = Integer(700).tag(sync=True)

@@ -24,7 +24,7 @@ export class RhinoModel extends DOMWidgetModel {
       _view_name: RhinoModel.view_name,
       _view_module: RhinoModel.view_module,
       _view_module_version: RhinoModel.view_module_version,
-      value: '',
+      path: '',
       height: 700,
       width: 1000,
     };
@@ -81,24 +81,29 @@ function load3dmModel(
 }
 
 export class RhinoView extends DOMWidgetView {
-  private path: string = this.model.get('value');
+  private path: string = this.model.get('path');
   private width: number = this.model.get('width');
   private height: number = this.model.get('height');
 
   render() {
     const error = document.createElement('p');
     if (this.width < 100 || this.width > 3000) {
-      error.textContent = 'Width must be in range of 100-3000';
+      error.textContent = 'Error: width must be in range of 100-3000';
       this.el.appendChild(error);
       return;
     }
     if (this.height < 100 || this.height > 3000) {
-      error.textContent = 'Height must be in range of 100-3000';
+      error.textContent = 'Error: height must be in range of 100-3000';
+      this.el.appendChild(error);
+      return;
+    }
+    if (this.path === '') {
+      error.textContent = 'Error: path is required';
       this.el.appendChild(error);
       return;
     }
     if (this.path.split('.').pop() !== '3dm') {
-      error.textContent = 'Path should lead to a 3dm file';
+      error.textContent = 'Error: path should lead to a 3dm file';
       this.el.appendChild(error);
       return;
     }
@@ -131,7 +136,7 @@ export class RhinoView extends DOMWidgetView {
       })
       .catch(() => {
         error.textContent =
-          'Error: ' + this.model.get('value') + ' was not found';
+          'Error: path "' + this.model.get('path') + '" was not found';
         this.el.appendChild(error);
         return;
       });
@@ -148,6 +153,6 @@ export class RhinoView extends DOMWidgetView {
   }
 
   value_changed(): void {
-    this.path = this.model.get('value');
+    this.path = this.model.get('path');
   }
 }

@@ -10,7 +10,7 @@ A Custom Jupyter Rhino 3dm Viewer
 ```python
 from ipyrhinoviewer import RhinoViewer
 
-RhinoViewer(value='examples/rhino.3dm',width=1000,height=700)
+RhinoViewer(path='examples/rhino.3dm',width=1000,height=700)
 ```
 
 ## Installation
