@@ -28,6 +28,7 @@ export class RhinoModel extends DOMWidgetModel {
       height: 700,
       width: 1000,
       background_color: 'rgb(255, 255, 255)',
+      camera_pos: { x: 15, y: 15, z: 15 },
     };
   }
 
@@ -88,6 +89,8 @@ export class RhinoView extends DOMWidgetView {
   private height: number = this.model.get('height');
   private background_color: number | string =
     this.model.get('background_color');
+  private postion: { x: number; y: number; z: number } =
+    this.model.get('camera_pos');
 
   showError(msg: string) {
     const error = document.createElement('p');
@@ -162,9 +165,9 @@ export class RhinoView extends DOMWidgetView {
         return;
       });
 
-    camera.position.x = 15;
-    camera.position.y = 15;
-    camera.position.z = 15;
+    camera.position.x = this.postion.x;
+    camera.position.y = this.postion.y;
+    camera.position.z = this.postion.z;
     camera.lookAt(0, 0, 0);
 
     function animate() {
