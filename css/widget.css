@@ -1,4 +1,4 @@
-.custom-widget {
-  background-color: lightseagreen;
-  padding: 0px 2px;
+.border {
+  border-radius: 25px;
+  border: 2px solid rgb(131, 131, 131);
 }
