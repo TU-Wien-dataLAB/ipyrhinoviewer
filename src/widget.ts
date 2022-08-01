@@ -29,6 +29,7 @@ export class RhinoModel extends DOMWidgetModel {
       width: 1000,
       background_color: 'rgb(255, 255, 255)',
       camera_pos: { x: 15, y: 15, z: 15 },
+      show_axes: true,
     };
   }
 
@@ -91,6 +92,7 @@ export class RhinoView extends DOMWidgetView {
     this.model.get('background_color');
   private postion: { x: number; y: number; z: number } =
     this.model.get('camera_pos');
+  private show_axes: boolean = this.model.get('show_axes');
 
   showError(msg: string) {
     const error = document.createElement('p');
@@ -140,7 +142,11 @@ export class RhinoView extends DOMWidgetView {
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(this.width, this.height);
 
-    const ambientLight = new THREE.AmbientLight(0xcccccc, 2);
+    if (this.show_axes) {
+      const axesHelper = new THREE.AxesHelper(200);
+      scene.add(axesHelper);
+    }
+    const ambientLight = new THREE.AmbientLight(0xffffff);
     scene.add(ambientLight);
     const controls = new OrbitControls(camera, renderer.domElement);
     const onContextMenu = (event: Event) => {
