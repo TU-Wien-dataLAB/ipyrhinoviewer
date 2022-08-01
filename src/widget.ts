@@ -168,11 +168,27 @@ export class RhinoView extends DOMWidgetView {
     camera.position.x = this.postion.x;
     camera.position.y = this.postion.y;
     camera.position.z = this.postion.z;
+    const tracker = document.createElement('p');
+    this.el.onselectstart = () => {
+      return false;
+    };
+    this.el.appendChild(tracker);
     camera.lookAt(0, 0, 0);
-
+    let frame = 0;
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
+      if (frame === 20) {
+        tracker.textContent =
+          'camera position: x: ' +
+          camera.position.x.toString() +
+          ' y: ' +
+          camera.position.y.toString() +
+          ' z: ' +
+          camera.position.z.toString();
+        frame = 0;
+      }
+      frame++;
       renderer.render(scene, camera);
     }
 
