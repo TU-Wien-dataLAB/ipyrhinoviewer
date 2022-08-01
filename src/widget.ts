@@ -27,6 +27,7 @@ export class RhinoModel extends DOMWidgetModel {
       path: '',
       height: 700,
       width: 1000,
+      background_color: 'rgb(255, 255, 255)',
     };
   }
 
@@ -58,6 +59,7 @@ function load3dmModel(
         const obj = data;
         obj.position.y = 0;
         obj.position.x = 0;
+        obj.position.z = 0;
         obj.receiveShadow = receiveShadow;
         obj.castShadow = castShadow;
         scene.add(obj);
@@ -84,6 +86,8 @@ export class RhinoView extends DOMWidgetView {
   private path: string = this.model.get('path');
   private width: number = this.model.get('width');
   private height: number = this.model.get('height');
+  private background_color: number | string =
+    this.model.get('background_color');
 
   showError(msg: string) {
     const error = document.createElement('p');
@@ -117,15 +121,22 @@ export class RhinoView extends DOMWidgetView {
       return;
     }
     const scene = new THREE.Scene();
+    try {
+      scene.background = new THREE.Color(this.background_color);
+    } catch (error) {
+      this.showError(error);
+      return;
+    }
     const camera = new THREE.PerspectiveCamera(
       50,
       this.width / this.height,
-      0.1,
-      2000
+      1,
+      1000
     );
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(this.width, this.height);
+
     const ambientLight = new THREE.AmbientLight(0xcccccc, 2);
     scene.add(ambientLight);
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -135,7 +146,7 @@ export class RhinoView extends DOMWidgetView {
     this.el.addEventListener('contextmenu', onContextMenu);
     load3dmModel(scene, '/tree/' + this.path, {
       receiveShadow: true,
-      castShadow: false,
+      castShadow: true,
     })
       .then(() => {
         this.el.removeChild(loading);
@@ -151,7 +162,10 @@ export class RhinoView extends DOMWidgetView {
         return;
       });
 
-    camera.position.z = 5;
+    camera.position.x = 15;
+    camera.position.y = 15;
+    camera.position.z = 15;
+    camera.lookAt(0, 0, 0);
 
     function animate() {
       requestAnimationFrame(animate);

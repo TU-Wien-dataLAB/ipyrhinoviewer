@@ -9,7 +9,7 @@ TODO: Add module docstring
 """
 
 from ipywidgets import DOMWidget
-from traitlets import Unicode, Integer
+from traitlets import Unicode, Integer, Any
 from ._frontend import module_name, module_version
 
 class RhinoViewer(DOMWidget):
@@ -25,3 +25,4 @@ class RhinoViewer(DOMWidget):
     path = Unicode('').tag(sync=True)
     width = Integer(1000).tag(sync=True)
     height = Integer(700).tag(sync=True)
+    background_color = Any('rgb(255,255,255)').tag(sync=True)
