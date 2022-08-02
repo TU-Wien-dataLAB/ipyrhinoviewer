@@ -28,3 +28,4 @@ class RhinoViewer(DOMWidget):
     background_color = Any('rgb(255,255,255)').tag(sync=True)
     camera_pos = Dict(default_value={"x": 15, "y": 15, "z": 15}).tag(sync=True)
     show_axes = Bool(True).tag(sync=True)
+    grid = Dict(default_value=None).tag(sync=True)

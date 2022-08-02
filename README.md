@@ -15,7 +15,8 @@ RhinoViewer(path='examples/rhino.3dm',
             height=700,
             background_color='rgb(255,255,255)',
             camera_pos={"x": 15, "y": 15, "z": 15},
-            show_axes=True)
+            show_axes=True,
+            grid={"size": 10, "divisions": 10})
 ```
 
 ## Installation

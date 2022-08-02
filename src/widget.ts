@@ -30,6 +30,7 @@ export class RhinoModel extends DOMWidgetModel {
       background_color: 'rgb(255, 255, 255)',
       camera_pos: { x: 15, y: 15, z: 15 },
       show_axes: true,
+      grid: null,
     };
   }
 
@@ -93,6 +94,8 @@ export class RhinoView extends DOMWidgetView {
   private postion: { x: number; y: number; z: number } =
     this.model.get('camera_pos');
   private show_axes: boolean = this.model.get('show_axes');
+  private grid: { size: number; division: number } | null =
+    this.model.get('grid');
 
   showError(msg: string) {
     const error = document.createElement('p');
@@ -145,6 +148,14 @@ export class RhinoView extends DOMWidgetView {
     if (this.show_axes) {
       const axesHelper = new THREE.AxesHelper(200);
       scene.add(axesHelper);
+    }
+
+    if (this.grid !== null) {
+      const gridHelper = new THREE.GridHelper(
+        this.grid.size,
+        this.grid.division
+      );
+      scene.add(gridHelper);
     }
     const ambientLight = new THREE.AmbientLight(0xffffff);
     scene.add(ambientLight);
