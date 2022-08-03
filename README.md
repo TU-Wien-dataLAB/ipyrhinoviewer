@@ -28,7 +28,7 @@ v = RhinoViewer(path='examples/rhino.3dm',
 * `ambient_light`: adds ambient light to the scene
 * `background_color`: changes background color
 * `camera_pos`: sets the camera position
-* `show_axes`: adds a axes helper to the scene
+* `show_axes`: adds an axes helper to the scene
 * `grid`: adds a grid helper to the scene
 
 ## Installation
