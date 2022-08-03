@@ -1,9 +1,9 @@
 
 # ipyrhinoviewer
 
-![https://pypi.org/project/ipyrhinoviewer/](https://img.shields.io/pypi/v/ipyrhinoviewer?color=%23)
-![https://www.npmjs.com/package/ipyrhinoviewer](https://img.shields.io/npm/v/ipyrhinoviewer?color=%23)
-![https://github.com/TU-Wien-dataLAB/ipyrhinoviewer/actions/workflows/build.yml](https://img.shields.io/github/workflow/status/TU-Wien-dataLAB/ipyrhinoviewer/Build)
+[![PYPI](https://img.shields.io/pypi/v/ipyrhinoviewer?color=%23)](https://pypi.org/project/ipyrhinoviewer/)
+[![NPM](https://img.shields.io/npm/v/ipyrhinoviewer?color=%23)](https://www.npmjs.com/package/ipyrhinoviewer)
+[![Build](https://img.shields.io/github/workflow/status/TU-Wien-dataLAB/ipyrhinoviewer/Build)](https://github.com/TU-Wien-dataLAB/ipyrhinoviewer/actions/workflows/build.yml)
 
 A Custom Jupyter Rhino 3dm Viewer
 ## Usage
