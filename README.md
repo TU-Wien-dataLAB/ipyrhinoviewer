@@ -13,7 +13,8 @@ from ipyrhinoviewer import RhinoViewer
 RhinoViewer(path='examples/rhino.3dm',
             width=1000,
             height=700,
-            background_color='rgb(255,255,255)',
+            ambient_light={"color": "rgb(255,255,255)", "intensity": 1},
+            background_color="rgb(200,200,200)",
             camera_pos={"x": 15, "y": 15, "z": 15},
             show_axes=True,
             grid={"size": 10, "divisions": 10})
