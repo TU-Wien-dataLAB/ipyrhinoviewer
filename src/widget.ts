@@ -47,11 +47,11 @@ export class RhinoModel extends DOMWidgetModel {
   static view_module_version = MODULE_VERSION;
 }
 
-function load3dmModel(
+const load3dmModel = (
   scene: THREE.Scene,
   filePath: string,
   options: { receiveShadow: any; castShadow: any }
-) {
+) => {
   const { receiveShadow, castShadow } = options;
   return new Promise((resolve, reject) => {
     const loader = new Rhino3dmLoader();
@@ -83,7 +83,7 @@ function load3dmModel(
       }
     );
   });
-}
+};
 
 export class RhinoView extends DOMWidgetView {
   private path: string = this.model.get('path');
@@ -96,45 +96,34 @@ export class RhinoView extends DOMWidgetView {
   private show_axes: boolean = this.model.get('show_axes');
   private grid: { size: number; division: number } | null =
     this.model.get('grid');
-
-  showError(msg: string) {
-    const error = document.createElement('p');
-    error.textContent = msg;
-    this.el.appendChild(error);
-    const loading = document.getElementById('loading');
-    if (loading !== null) {
-      this.el.removeChild(loading);
-    }
-  }
+  private scene: THREE.Scene;
 
   render() {
+    //add a loading element while loading
     const loading = document.createElement('p');
     loading.id = 'loading';
     loading.textContent = 'Loading';
     this.el.appendChild(loading);
-    if (this.width < 100 || this.width > 3000) {
-      this.showError('Error: width must be in range of 100-3000');
-      return;
-    }
-    if (this.height < 100 || this.height > 3000) {
-      this.showError('Error: height must be in range of 100-3000');
-      return;
-    }
-    if (this.path === '') {
-      this.showError('Error: path is required');
-      return;
-    }
-    if (this.path.split('.').pop() !== '3dm') {
-      this.showError('Error: path should lead to a 3dm file');
-      return;
-    }
-    const scene = new THREE.Scene();
+
+    //check parameters
     try {
-      scene.background = new THREE.Color(this.background_color);
+      this.checkParams();
+    } catch (e) {
+      this.showError(e.message);
+      return;
+    }
+
+    //create scene
+    this.scene = new THREE.Scene();
+
+    //set background color
+    try {
+      this.scene.background = new THREE.Color(this.background_color);
     } catch (error) {
       this.showError(error);
       return;
     }
+    //create camera
     const camera = new THREE.PerspectiveCamera(
       50,
       this.width / this.height,
@@ -142,29 +131,23 @@ export class RhinoView extends DOMWidgetView {
       1000
     );
 
+    //set renderer window based on parameters
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(this.width, this.height);
 
-    if (this.show_axes) {
-      const axesHelper = new THREE.AxesHelper(200);
-      scene.add(axesHelper);
-    }
+    this.addHelpersElements();
 
-    if (this.grid !== null) {
-      const gridHelper = new THREE.GridHelper(
-        this.grid.size,
-        this.grid.division
-      );
-      scene.add(gridHelper);
-    }
-    const ambientLight = new THREE.AmbientLight(0xffffff);
-    scene.add(ambientLight);
+    this.handleLighting();
+
     const controls = new OrbitControls(camera, renderer.domElement);
+    //Stops opening the context menu on right click
     const onContextMenu = (event: Event) => {
       event.stopPropagation();
     };
     this.el.addEventListener('contextmenu', onContextMenu);
-    load3dmModel(scene, '/tree/' + this.path, {
+
+    //Load the file
+    load3dmModel(this.scene, '/tree/' + this.path, {
       receiveShadow: true,
       castShadow: true,
     })
@@ -182,18 +165,21 @@ export class RhinoView extends DOMWidgetView {
         return;
       });
 
+    //position camera
     camera.position.x = this.postion.x;
     camera.position.y = this.postion.y;
     camera.position.z = this.postion.z;
+    //add a camera coordinates tracker
     const tracker = document.createElement('p');
     this.el.onselectstart = () => {
       return false;
     };
     renderer.domElement.classList.add('border');
     this.el.appendChild(tracker);
+
     camera.lookAt(0, 0, 0);
     let frame = 0;
-    function animate() {
+    const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
       if (frame === 50) {
@@ -207,13 +193,68 @@ export class RhinoView extends DOMWidgetView {
         frame = 0;
       }
       frame++;
-      renderer.render(scene, camera);
-    }
+      renderer.render(this.scene, camera);
+    };
 
     animate();
   }
 
+  private handleLighting(): void {
+    //const ambientLight = new THREE.AmbientLight(0xffffff);
+    //scene.add(ambientLight);
+    const spotLight = new THREE.SpotLight(0xffffff, 2);
+    spotLight.position.set(0, 0, 100);
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+
+    spotLight.shadow.camera.near = 500;
+    spotLight.shadow.camera.far = 4000;
+    spotLight.shadow.camera.fov = 30;
+    this.scene.add(spotLight);
+  }
+
+  private addHelpersElements() {
+    if (this.show_axes) {
+      const axesHelper = new THREE.AxesHelper(200);
+      this.scene.add(axesHelper);
+    }
+
+    if (this.grid !== null) {
+      const gridHelper = new THREE.GridHelper(
+        this.grid.size,
+        this.grid.division
+      );
+      this.scene.add(gridHelper);
+    }
+  }
+
+  showError(msg: string): void {
+    const error = document.createElement('p');
+    error.textContent = msg;
+    this.el.appendChild(error);
+    const loading = document.getElementById('loading');
+    if (loading !== null) {
+      this.el.removeChild(loading);
+    }
+  }
+
   value_changed(): void {
     this.path = this.model.get('path');
+  }
+
+  private checkParams() {
+    if (this.width < 100 || this.width > 3000) {
+      throw new Error('Error: width must be in range of 100-3000');
+    }
+    if (this.height < 100 || this.height > 3000) {
+      throw new Error('Error: height must be in range of 100-3000');
+    }
+    if (this.path === '') {
+      throw new Error('Error: path is required');
+    }
+    if (this.path.split('.').pop() !== '3dm') {
+      throw new Error('Error: path should lead to a 3dm file');
+    }
   }
 }
