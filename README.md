@@ -10,7 +10,7 @@ A Custom Jupyter Rhino 3dm Viewer
 ```python
 from ipyrhinoviewer import RhinoViewer
 
-RhinoViewer(path='examples/rhino.3dm',
+v = RhinoViewer(path='examples/rhino.3dm',
             width=1000,
             height=700,
             ambient_light={"color": "rgb(255,255,255)", "intensity": 1},
@@ -19,6 +19,17 @@ RhinoViewer(path='examples/rhino.3dm',
             show_axes=True,
             grid={"size": 10, "divisions": 10})
 ```
+**Required parameters**
+* `path`: path to 3dm file
+
+**Optional parameters**
+* `width`: width of the viewer in px, should be between 100 and 3000
+* `height`: height of the viewer in px, should be between 100 and 3000
+* `ambient_light`: adds ambient light to the scene
+* `background_color`: changes background color
+* `camera_pos`: sets the camera position
+* `show_axes`: adds a axes helper to the scene
+* `grid`: adds a grid helper to the scene
 
 ## Installation
 
