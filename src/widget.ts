@@ -31,6 +31,7 @@ export class RhinoModel extends DOMWidgetModel {
       camera_pos: { x: 15, y: 15, z: 15 },
       show_axes: true,
       grid: null,
+      ambient_light: null,
     };
   }
 
@@ -94,9 +95,11 @@ export class RhinoView extends DOMWidgetView {
   private postion: { x: number; y: number; z: number } =
     this.model.get('camera_pos');
   private show_axes: boolean = this.model.get('show_axes');
-  private grid: { size: number; division: number } | null =
+  private grid: { size: number; divisions: number } | null =
     this.model.get('grid');
   private scene: THREE.Scene;
+  private ambientLight: { color: string; intensity: number } =
+    this.model.get('ambient_light');
 
   render() {
     //add a loading element while loading
@@ -200,8 +203,15 @@ export class RhinoView extends DOMWidgetView {
   }
 
   private handleLighting(): void {
-    //const ambientLight = new THREE.AmbientLight(0xffffff);
-    //scene.add(ambientLight);
+    if (this.ambientLight !== null) {
+      const ambientLight = new THREE.AmbientLight(
+        this.ambientLight.color,
+        this.ambientLight.intensity
+      );
+      this.scene.add(ambientLight);
+    }
+    /*
+
     const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 0, 100);
     spotLight.castShadow = true;
@@ -211,7 +221,7 @@ export class RhinoView extends DOMWidgetView {
     spotLight.shadow.camera.near = 500;
     spotLight.shadow.camera.far = 4000;
     spotLight.shadow.camera.fov = 30;
-    this.scene.add(spotLight);
+    this.scene.add(spotLight);*/
   }
 
   private addHelpersElements() {
@@ -223,7 +233,7 @@ export class RhinoView extends DOMWidgetView {
     if (this.grid !== null) {
       const gridHelper = new THREE.GridHelper(
         this.grid.size,
-        this.grid.division
+        this.grid.divisions
       );
       this.scene.add(gridHelper);
     }
