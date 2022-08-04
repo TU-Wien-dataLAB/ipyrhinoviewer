@@ -29,6 +29,7 @@ export class RhinoModel extends DOMWidgetModel {
       width: 1000,
       background_color: 'rgb(255, 255, 255)',
       camera_pos: { x: 15, y: 15, z: 15 },
+      look_at: { x: 0, y: 0, z: 0 },
       show_axes: true,
       grid: null,
       ambient_light: null,
@@ -100,6 +101,8 @@ export class RhinoView extends DOMWidgetView {
   private scene: THREE.Scene;
   private ambientLight: { color: string; intensity: number } =
     this.model.get('ambient_light');
+  private look_at: { x: number; y: number; z: number } =
+    this.model.get('look_at');
 
   render() {
     //add a loading element while loading
@@ -133,7 +136,10 @@ export class RhinoView extends DOMWidgetView {
       1,
       1000
     );
-
+    //position camera
+    camera.position.x = this.postion.x;
+    camera.position.y = this.postion.y;
+    camera.position.z = this.postion.z;
     //set renderer window based on parameters
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(this.width, this.height);
@@ -143,6 +149,8 @@ export class RhinoView extends DOMWidgetView {
     this.handleLighting();
 
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(this.look_at.x, this.look_at.y, this.look_at.z);
+
     //Stops opening the context menu on right click
     const onContextMenu = (event: Event) => {
       event.stopPropagation();
@@ -168,10 +176,7 @@ export class RhinoView extends DOMWidgetView {
         return;
       });
 
-    //position camera
-    camera.position.x = this.postion.x;
-    camera.position.y = this.postion.y;
-    camera.position.z = this.postion.z;
+
     //add a camera coordinates tracker
     const tracker = document.createElement('p');
     this.el.onselectstart = () => {
@@ -180,7 +185,7 @@ export class RhinoView extends DOMWidgetView {
     renderer.domElement.classList.add('border');
     this.el.appendChild(tracker);
 
-    camera.lookAt(0, 0, 0);
+
     let frame = 0;
     const animate = () => {
       requestAnimationFrame(animate);

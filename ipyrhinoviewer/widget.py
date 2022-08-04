@@ -26,3 +26,4 @@ class RhinoViewer(DOMWidget):
     show_axes = Bool(True).tag(sync=True)
     grid = Dict(default_value={"size": 0, "divisions": 0}).tag(sync=True)
     ambient_light = Dict(default_value={"color": 0xffffff, "intensity": 0}).tag(sync=True)
+    look_at = Dict(default_value={"x": 0, "y": 0, "z": 0}).tag(sync=True)
