@@ -158,7 +158,7 @@ export class RhinoView extends DOMWidgetView {
     this.el.addEventListener('contextmenu', onContextMenu);
 
     //Load the file
-    load3dmModel(this.scene, '/tree/' + this.path, {
+    load3dmModel(this.scene, '/' + this.path, {
       receiveShadow: true,
       castShadow: true,
     })
