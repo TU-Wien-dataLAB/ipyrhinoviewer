@@ -154,3 +154,5 @@ ipyrhinoviewer/labextension/*.tgz
 
 # Packed lab extensions
 ipyrhinoviewer/labextension
+#docs
+/docs/source/_static
