@@ -28,8 +28,8 @@ export class RhinoModel extends DOMWidgetModel {
       height: 700,
       width: 1000,
       background_color: 'rgb(255, 255, 255)',
-      camera_pos: { x: 15, y: 15, z: 15 },
-      look_at: { x: 0, y: 0, z: 0 },
+      camera_pos: [15,15,15],
+      look_at: [0,0,0],
       show_axes: true,
       grid: null,
       ambient_light: null,
@@ -88,6 +88,9 @@ const load3dmModel = (
 };
 
 const resolveUrl = (url: string) => {
+  if (url.startsWith('http')) {
+    return url;
+  }
   let currentUrl: string = window.location.href;
   //Cut the notebook
   if (currentUrl.endsWith('.ipynb')) {
@@ -125,7 +128,7 @@ export class RhinoView extends DOMWidgetView {
   private height: number = this.model.get('height');
   private background_color: number | string =
     this.model.get('background_color');
-  private postion: { x: number; y: number; z: number } =
+  private postion: number[] =
     this.model.get('camera_pos');
   private show_axes: boolean = this.model.get('show_axes');
   private grid: { size: number; divisions: number } | null =
@@ -133,7 +136,7 @@ export class RhinoView extends DOMWidgetView {
   private scene: THREE.Scene;
   private ambientLight: { color: string; intensity: number } =
     this.model.get('ambient_light');
-  private look_at: { x: number; y: number; z: number } =
+  private look_at: number[] =
     this.model.get('look_at');
 
   render() {
@@ -169,9 +172,9 @@ export class RhinoView extends DOMWidgetView {
       1000
     );
     //position camera
-    camera.position.x = this.postion.x;
-    camera.position.y = this.postion.y;
-    camera.position.z = this.postion.z;
+    camera.position.x = this.postion[0];
+    camera.position.y = this.postion[1];
+    camera.position.z = this.postion[2];
     //set renderer window based on parameters
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(this.width, this.height);
@@ -181,7 +184,7 @@ export class RhinoView extends DOMWidgetView {
     this.handleLighting();
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(this.look_at.x, this.look_at.y, this.look_at.z);
+    controls.target.set(this.look_at[0], this.look_at[1], this.look_at[2]);
 
     //Stops opening the context menu on right click
     const onContextMenu = (event: Event) => {
@@ -244,7 +247,6 @@ export class RhinoView extends DOMWidgetView {
       this.scene.add(ambientLight);
     }
     /*
-
     const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 0, 100);
     spotLight.castShadow = true;
@@ -298,6 +300,12 @@ export class RhinoView extends DOMWidgetView {
     }
     if (this.path.split('.').pop() !== '3dm') {
       throw new Error('Error: path should lead to a 3dm file');
+    }
+    if (this.postion.length !== 3) {
+      throw new Error('Error: camera_pos should be a coordinate list eg: [15,15,15]')
+    }
+    if (this.look_at.length !== 3) {
+      throw new Error('Error: look_at should be a coordinate list eg: [15,15,15]')
     }
   }
 }

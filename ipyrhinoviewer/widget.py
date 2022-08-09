@@ -6,7 +6,7 @@
 
 
 from ipywidgets import DOMWidget
-from traitlets import Unicode, Integer, Any, Dict, Bool
+from traitlets import Unicode, Integer, Any, Dict, Bool, List
 from ._frontend import module_name, module_version
 
 class RhinoViewer(DOMWidget):
@@ -22,8 +22,8 @@ class RhinoViewer(DOMWidget):
     width = Integer(1000).tag(sync=True)
     height = Integer(700).tag(sync=True)
     background_color = Any('rgb(255,255,255)').tag(sync=True)
-    camera_pos = Dict(default_value={"x": 15, "y": 15, "z": 15}).tag(sync=True)
+    camera_pos = List(default_value=[15,15,15]).tag(sync=True)
     show_axes = Bool(True).tag(sync=True)
     grid = Dict(default_value={"size": 0, "divisions": 0}).tag(sync=True)
     ambient_light = Dict(default_value={"color": 0xffffff, "intensity": 0}).tag(sync=True)
-    look_at = Dict(default_value={"x": 0, "y": 0, "z": 0}).tag(sync=True)
+    look_at = List(default_value=[0,0,0]).tag(sync=True)
