@@ -88,9 +88,6 @@ const load3dmModel = (
 };
 
 const resolveUrl = (url: string) => {
-  if (url.startsWith('http')) {
-    return url;
-  }
   let currentUrl: string = window.location.href;
   //Cut the notebook
   if (currentUrl.endsWith('.ipynb')) {
@@ -105,19 +102,10 @@ const resolveUrl = (url: string) => {
       const lastIndex = currentUrl.lastIndexOf('/');
       currentUrl = currentUrl.slice(0, lastIndex);
     } else {
-      currentUrl.concat(f);
+      currentUrl = currentUrl.concat('/' + f);
     }
   }
-  //add file
-  const fileIndex = url.lastIndexOf('/');
-  let file = '';
-  if (fileIndex === -1) {
-    file = url;
-  } else {
-    file = url.slice(fileIndex + 1);
-  }
 
-  currentUrl = currentUrl.concat('/' + file);
   console.log(currentUrl);
   return currentUrl;
 };
