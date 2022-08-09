@@ -87,6 +87,38 @@ const load3dmModel = (
   });
 };
 
+const resolveUrl = (url: string) => {
+  let currentUrl: string = window.location.href;
+  //Cut the notebook
+  if (currentUrl.endsWith('.ipynb')) {
+    const lastIndex = currentUrl.lastIndexOf('/');
+    currentUrl = currentUrl.slice(0, lastIndex);
+  }
+
+  currentUrl = currentUrl.replace('/lab', '');
+  const folders = url.split('/');
+  for (const f of folders) {
+    if (f === '..') {
+      const lastIndex = currentUrl.lastIndexOf('/');
+      currentUrl = currentUrl.slice(0, lastIndex);
+    } else {
+      currentUrl.concat(f);
+    }
+  }
+  //add file
+  const fileIndex = url.lastIndexOf('/');
+  let file = '';
+  if (fileIndex === -1) {
+    file = url;
+  } else {
+    file = url.slice(fileIndex + 1);
+  }
+
+  currentUrl = currentUrl.concat('/' + file);
+  console.log(currentUrl);
+  return currentUrl;
+};
+
 export class RhinoView extends DOMWidgetView {
   private path: string = this.model.get('path');
   private width: number = this.model.get('width');
@@ -156,9 +188,9 @@ export class RhinoView extends DOMWidgetView {
       event.stopPropagation();
     };
     this.el.addEventListener('contextmenu', onContextMenu);
-
+    const url = resolveUrl(this.path);
     //Load the file
-    load3dmModel(this.scene, '/' + this.path, {
+    load3dmModel(this.scene, url, {
       receiveShadow: true,
       castShadow: true,
     })
@@ -170,12 +202,9 @@ export class RhinoView extends DOMWidgetView {
         animate();
       })
       .catch(() => {
-        this.showError(
-          'Error: path "' + this.model.get('path') + '" was not found'
-        );
+        this.showError('Error: path "' + url + '" was not found');
         return;
       });
-
 
     //add a camera coordinates tracker
     const tracker = document.createElement('p');
@@ -184,7 +213,6 @@ export class RhinoView extends DOMWidgetView {
     };
     renderer.domElement.classList.add('border');
     this.el.appendChild(tracker);
-
 
     let frame = 0;
     const animate = () => {
