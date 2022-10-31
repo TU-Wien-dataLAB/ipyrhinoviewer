@@ -13,6 +13,7 @@ import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
 
 // Import the CSS
 import '../css/widget.css';
+import {Object3D} from "three";
 
 export class RhinoModel extends DOMWidgetModel {
   defaults() {
@@ -28,8 +29,8 @@ export class RhinoModel extends DOMWidgetModel {
       height: 700,
       width: 1000,
       background_color: 'rgb(255, 255, 255)',
-      camera_pos: [15,15,15],
-      look_at: [0,0,0],
+      camera_pos: [15, 15, 15],
+      look_at: [0, 0, 0],
       show_axes: true,
       grid: null,
       ambient_light: null,
@@ -60,7 +61,7 @@ const load3dmModel = (
     loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/');
     loader.load(
       filePath,
-      (data: any) => {
+      (data: Object3D) => {
         const obj = data;
         obj.position.y = 0;
         obj.position.x = 0;
@@ -89,6 +90,7 @@ const load3dmModel = (
 
 const resolveUrl = (url: string) => {
   let currentUrl: string = window.location.href;
+
   //Cut the notebook
   if (currentUrl.endsWith('.ipynb')) {
     const lastIndex = currentUrl.lastIndexOf('/');
@@ -96,6 +98,16 @@ const resolveUrl = (url: string) => {
   }
 
   currentUrl = currentUrl.replace('/lab', '');
+
+  //replace part of url if extension is used in nbclassic (legacy)
+  if (currentUrl.includes('/notebooks/')) {
+    currentUrl.replace('notebooks', 'tree');
+  }
+  //if path is absolute ignore current notebook position
+  if (url.startsWith('/')) {
+    return currentUrl.slice(0, currentUrl.indexOf('tree')) + 'tree' + url;
+  }
+
   const folders = url.split('/');
   for (const f of folders) {
     if (f === '..') {
@@ -116,16 +128,14 @@ export class RhinoView extends DOMWidgetView {
   private height: number = this.model.get('height');
   private background_color: number | string =
     this.model.get('background_color');
-  private postion: number[] =
-    this.model.get('camera_pos');
+  private postion: number[] = this.model.get('camera_pos');
   private show_axes: boolean = this.model.get('show_axes');
   private grid: { size: number; divisions: number } | null =
     this.model.get('grid');
   private scene: THREE.Scene;
   private ambientLight: { color: string; intensity: number } =
     this.model.get('ambient_light');
-  private look_at: number[] =
-    this.model.get('look_at');
+  private look_at: number[] = this.model.get('look_at');
 
   render() {
     //add a loading element while loading
@@ -290,10 +300,14 @@ export class RhinoView extends DOMWidgetView {
       throw new Error('Error: path should lead to a 3dm file');
     }
     if (this.postion.length !== 3) {
-      throw new Error('Error: camera_pos should be a coordinate list eg: [15,15,15]')
+      throw new Error(
+        'Error: camera_pos should be a coordinate list eg: [15,15,15]'
+      );
     }
     if (this.look_at.length !== 3) {
-      throw new Error('Error: look_at should be a coordinate list eg: [15,15,15]')
+      throw new Error(
+        'Error: look_at should be a coordinate list eg: [15,15,15]'
+      );
     }
   }
 }
