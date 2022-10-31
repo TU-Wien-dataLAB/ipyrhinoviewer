@@ -1,6 +1,6 @@
 {
   "name": "ipyrhinoviewer",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A Custom Jupyter Rhino Viewer",
   "keywords": [
     "jupyter",
