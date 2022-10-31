@@ -10,10 +10,10 @@ import * as THREE from 'three';
 import { MODULE_NAME, MODULE_VERSION } from './version';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
+import { Object3D } from 'three';
 
 // Import the CSS
 import '../css/widget.css';
-import {Object3D} from "three";
 
 export class RhinoModel extends DOMWidgetModel {
   defaults() {
@@ -50,7 +50,7 @@ export class RhinoModel extends DOMWidgetModel {
   static view_module_version = MODULE_VERSION;
 }
 
-const load3dmModel = (
+export const load3dmModel = (
   scene: THREE.Scene,
   filePath: string,
   options: { receiveShadow: any; castShadow: any }
@@ -88,7 +88,7 @@ const load3dmModel = (
   });
 };
 
-const resolveUrl = (url: string) => {
+export const resolveUrl = (url: string) => {
   let currentUrl: string = window.location.href;
 
   //Cut the notebook
@@ -101,7 +101,7 @@ const resolveUrl = (url: string) => {
 
   //replace part of url if extension is used in nbclassic (legacy)
   if (currentUrl.includes('/notebooks/')) {
-    currentUrl.replace('notebooks', 'tree');
+    currentUrl = currentUrl.replace('notebooks', 'tree');
   }
   //if path is absolute ignore current notebook position
   if (url.startsWith('/')) {
